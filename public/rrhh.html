@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automatización de Redes Sociales</title>
+  <link rel="stylesheet" href="style.css"> <!-- Opcional: Agrega estilos -->
+</head>
+<body>
+  <h1>Programar Publicación en Instagram</h1>
+
+  <!-- Formulario para programar publicaciones -->
+  <form id="socialForm">
+    <label for="text">Texto de la publicación:</label><br>
+    <input type="text" id="text" placeholder="Ingresa el texto de la publicación" required /><br><br>
+
+    <label for="image">URL de la imagen:</label><br>
+    <input type="url" id="image" placeholder="https://ejemplo.com/imagen.jpg" required /><br><br>
+
+    <label for="time">Hora de la publicación (HH:mm):</label><br>
+    <input type="time" id="time" required /><br><br>
+
+    <button type="submit">Programar Publicación</button>
+  </form>
+
+  <!-- Área para mostrar mensajes de respuesta -->
+  <div id="response" style="margin-top: 20px; font-weight: bold;"></div>
+
+  <!-- Script para manejar el formulario -->
+  <script>
+    document.getElementById('socialForm').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Evita que el formulario recargue la página
+
+      // Capturar los valores del formulario
+      const text = document.getElementById('text').value;
+      const image = document.getElementById('image').value;
+      const time = document.getElementById('time').value;
+
+      try {
+        // Enviar los datos al servidor mediante una solicitud POST
+        const response = await fetch('/api/social/schedule', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, image, time })
+        });
+
+        const result = await response.json(); // Procesar la respuesta del servidor
+
+        // Mostrar el mensaje de respuesta
+        document.getElementById('response').innerText = result.message || 'Error en la solicitud';
+      } catch (error) {
+        // Mostrar mensaje de error en caso de fallo
+        document.getElementById('response').innerText = '❌ Error al programar la publicación.';
+        console.error("Error:", error);
+      }
+    });
+  </script>
+</body>
+</html>
